@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+    	http://www.springframework.org/schema/beans/spring-beans.xsd
+    	http://www.springframework.org/schema/context
+    	http://www.springframework.org/schema/context/spring-context.xsd
+    	http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="com.lenapalasionak.spring.mvc" /><!--будем сканироать пакет, в целях найти компоненты -->
+
+    <mvc:annotation-driven/> <!--для поддержания форматирования, валидации…-->
+
+    <bean
+            class="org.springframework.web.servlet.view.InternalResourceViewResolver"> <!--будут определяться Имена
+            Видов (View). Когда мы будем обращаться к view нам не придется прописывать его полное имя, т.к в проперти
+            мы зададим суффикс и префикс.-->
+        <property name="prefix" value="/WEB-INF/view/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+    <!--создаем бин класса существующего ComboPooledDataSource, property name= -отсылка на сеттер. С3PO коннекшн пул для
+    связи с БД, позволяе экономить время на подключении к базе данных-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+          destroy-method="close">
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver" />
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/my_db?useSSL=false&amp;serverTimezone=UTC" />
+        <property name="user" value="bestuser" />
+        <property name="password" value="bestuser" />
+    </bean>
+
+    <!--для поддержания форматирования, валидации…-->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="packagesToScan" value="com.lenapalasionak.spring.mvc.entity" />
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop> <!--чтобы видить какие SQL стейтменты выполняются-->
+                <prop key="hibernate.show_sql">true</prop><!--активируем-->
+            </props>
+        </property>
+    </bean>
+
+    <!--этот бин избавит нас от необходимости открывать закрывать транзакции. Получается класс TransactionManager
+    с полем типа SessionFactory-->
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/><!--сеттер getsessionFactory, ccылка на id ref="sessionFactory -->
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager" /><!--активируем транзакции-->
+
+</beans>
+
+
+
+
+
