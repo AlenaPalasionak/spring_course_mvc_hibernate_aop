@@ -1,14 +1,12 @@
-package com.lenapalasionak.spring.mvc.dao;
+package com.lenapalasionak.spring.mvc.service;
 
 import com.lenapalasionak.spring.mvc.entity.Employee;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+public interface EmployeeService {
 
-public interface EmployeeDAO {
     public List<Employee> getAllEmployees();
 
     public void saveEmployee(Employee employee);
-
 }
