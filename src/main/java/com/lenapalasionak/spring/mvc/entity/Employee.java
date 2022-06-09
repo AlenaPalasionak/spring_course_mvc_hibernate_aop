@@ -3,24 +3,24 @@ package com.lenapalasionak.spring.mvc.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name="employees")
+@Table(name = "employees")
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private int id;
 
-    @Column(name="name")
+    @Column(name = "name")
     String name;
 
-    @Column(name="surname")
+    @Column(name = "surname")
     String surname;
 
-    @Column(name="department")
+    @Column(name = "department")
     String department;
 
-    @Column(name="salary")
+    @Column(name = "salary")
     int salary;
 
     public Employee() {
